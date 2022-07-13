@@ -1,0 +1,78 @@
+name: .NET
+
+on:
+  push:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        include-prerelease: false
+
+     # Add NuGet Sources
+
+    - name: Create Local NuGet Directory
+      run: mkdir ~/nuget
+
+    - name: Add Local Nuget Source
+      run: dotnet nuget add source ~/nuget
+
+    - name: Add GGroupp NuGet Source
+      run: dotnet nuget add source ${{ secrets.GGROUPP_NUGET_SOURCE_URL }} -n ggroupp -u ${{ secrets.GGROUPP_NUGET_SOURCE_USER_NAME }} -p ${{ secrets.GGROUPP_NUGET_SOURCE_USER_PASSWORD }} --store-password-in-clear-text
+
+    # Api.Abstractions.CreateDocument
+
+    - name: Restore Api.Abstractions.CreateDocument
+      run: dotnet restore ./src/*/Api.Abstractions.CreateDocument.csproj
+
+    - name: Build Api.Abstractions.CreateDocument
+      run: dotnet build ./src/*/Api.Abstractions.CreateDocument.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions.CreateDocument
+      run: dotnet pack ./src/*/Api.Abstractions.CreateDocument.csproj --no-restore -o ~/nuget  -c Release
+
+    # Api.Abstractions.QueryDocumentSet
+
+    - name: Restore Api.Abstractions.QueryDocumentSet
+      run: dotnet restore ./src/*/Api.Abstractions.QueryDocumentSet.csproj
+
+    - name: Build Api.Abstractions.QueryDocumentSet
+      run: dotnet build ./src/*/Api.Abstractions.QueryDocumentSet.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions.QueryDocumentSet
+      run: dotnet pack ./src/*/Api.Abstractions.QueryDocumentSet.csproj --no-restore -o ~/nuget  -c Release
+
+    # Api.Abstractions
+
+    - name: Restore Api.Abstractions
+      run: dotnet restore ./src/*/Api.Abstractions.csproj
+
+    - name: Build Api.Abstractions
+      run: dotnet build ./src/*/Api.Abstractions.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions
+      run: dotnet pack ./src/*/Api.Abstractions.csproj --no-restore -o ~/nuget  -c Release
+
+    # Api.CosmosDb
+
+    - name: Restore Api.CosmosDb
+      run: dotnet restore ./src/*/Api.CosmosDb.csproj
+
+    - name: Build Api.CosmosDb
+      run: dotnet build ./src/*/Api.CosmosDb.csproj --no-restore  -c Release
+
+    - name: Pack Api.CosmosDb
+      run: dotnet pack ./src/*/Api.CosmosDb.csproj --no-restore -o ~/nuget  -c Release
+
+    # Push
+
+    - name: Push Packages
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: dotnet nuget push "../../../nuget/*.nupkg" -s ${{ secrets.GGROUPP_NUGET_SOURCE_URL }} -k ${{ secrets.GGROUPP_NUGET_SOURCE_USER_PASSWORD }} --skip-duplicate
