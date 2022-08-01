@@ -8,13 +8,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>GGroupp.Infra</RootNamespace>
     <AssemblyName>GGroupp.Infra.DocumentDb.Api.Abstractions</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.CreateDocument" Version="1.0.0" />
     <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.QueryDocumentSet" Version="1.0.0" />
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.GetDocument" Version="1.0.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.GetDocument" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

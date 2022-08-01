@@ -6,5 +6,5 @@ public sealed record DbDocumentGetOut<T>
         =>
         Document = document;
 
-    T Document { get; }
+    public T Document { get; }
 }
