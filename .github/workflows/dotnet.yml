@@ -49,6 +49,17 @@ jobs:
     - name: Pack Api.Abstractions.QueryDocumentSet
       run: dotnet pack ./src/*/Api.Abstractions.QueryDocumentSet.csproj --no-restore -o ~/nuget  -c Release
 
+    # Api.Abstractions.GetDocument
+
+    - name: Restore Api.Abstractions.GetDocument
+      run: dotnet restore ./src/*/Api.Abstractions.GetDocument.csproj
+
+    - name: Build Api.Abstractions.GetDocument
+      run: dotnet build ./src/*/Api.Abstractions.GetDocument.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions.GetDocument
+      run: dotnet pack ./src/*/Api.Abstractions.GetDocument.csproj --no-restore -o ~/nuget  -c Release
+
     # Api.Abstractions
 
     - name: Restore Api.Abstractions
