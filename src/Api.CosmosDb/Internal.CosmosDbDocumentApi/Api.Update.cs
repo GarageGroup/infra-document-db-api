@@ -6,7 +6,6 @@ namespace GGroupp.Infra;
 
 partial class CosmosDbDocumentApi
 {
-
     public ValueTask<Result<DbDocumentUpdateOut<T>, Failure<DbDocumentUpdateFailureCode>>> UpdateDocumentAsync<T>(
         DbDocumentUpdateIn input, CancellationToken cancellationToken = default)
     {
