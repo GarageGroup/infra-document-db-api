@@ -14,9 +14,9 @@ partial class HttpExtensions
     internal static async ValueTask<Result<DbDocumentUpdateOut<T>, Failure<DbDocumentUpdateFailureCode>>> SendAsync<T>(
         this HttpMessageHandler handler, CosmosDbApiOption option, DbDocumentUpdateIn input, CancellationToken cancellationToken)
     {
-        if(input.DocumentOperations.Count > updateOperationsLimit)
+        if (input.DocumentOperations.Count > updateOperationsLimit)
         {
-            return Failure.Create(DbDocumentUpdateFailureCode.OperationsLimitExceeded, "The number of operations must be less than 10");
+            return Failure.Create(DbDocumentUpdateFailureCode.ExceededOperationsLimit, $"The number of operations must be less than {updateOperationsLimit}");
         }
 
         var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/docs/{input.DocumentId}";
@@ -36,7 +36,7 @@ partial class HttpExtensions
             return CreateHttpFailure(httpResponse.StatusCode, body).MapFailureCode(MapStatusCode);
         }
 
-        return DeserializeOrFailure(body);
+        return DeserializeOrFailure<T, DbDocumentUpdateFailureCode>(body).MapSuccess(doc => new DbDocumentUpdateOut<T>(doc));
 
         HttpClient InnerCreateHttpClient()
             =>
@@ -52,23 +52,5 @@ partial class HttpExtensions
                 HttpStatusCode.BadRequest => DbDocumentUpdateFailureCode.InvalidDocumentOperations,
                 _ => default
             };
-        
-        static Result<DbDocumentUpdateOut<T>, Failure<DbDocumentUpdateFailureCode>> DeserializeOrFailure(string body)
-        {
-            try
-            {
-                var document = Deserialize<T>(body);
-                if(document is null)
-                {
-                    return Failure.Create(DbDocumentUpdateFailureCode.Unknown, $"Cannot deserialize response body: {body}");
-                }
-
-                return new DbDocumentUpdateOut<T>(document);
-            }
-            catch (JsonException ex)
-            {
-                return Failure.Create(DbDocumentUpdateFailureCode.Unknown, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
-            }
-        }
     }
 }

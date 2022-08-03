@@ -139,4 +139,27 @@ internal static partial class HttpExtensions
                 _ => throw new InvalidOperationException()
             };
     }
+
+    private static Result<T, Failure<TFailureCode>> DeserializeOrFailure<T, TFailureCode>(string body)
+        where TFailureCode : struct
+    {
+        try
+        {
+            var document = Deserialize<T>(body);
+            if(document is null)
+            {
+                return Failure.Create<TFailureCode>(default, $"Cannot deserialize response body: {body}");
+            }
+
+            return document;
+        }
+        catch (JsonException ex)
+        {
+            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+        }
+        catch (NotSupportedException ex)
+        {
+            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+        }
+    }
 }

@@ -8,5 +8,5 @@ public enum DbDocumentUpdateFailureCode
 
     InvalidDocumentOperations,
 
-    OperationsLimitExceeded
+    ExceededOperationsLimit
 }
