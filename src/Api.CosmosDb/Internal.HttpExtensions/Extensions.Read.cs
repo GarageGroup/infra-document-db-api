@@ -26,7 +26,7 @@ internal static partial class HttpExtensions
             return CreateHttpFailure(httpResponse.StatusCode, body).MapFailureCode(MapStatusCode);
         }
 
-        return DeserializeOrFailure<T,DbDocumentGetFailureCode>(body).MapSuccess(doc => new DbDocumentGetOut<T>(doc));
+        return DeserializeOrFailure<T,DbDocumentGetFailureCode>(body).MapSuccess(static doc => new DbDocumentGetOut<T>(doc));
 
         HttpClient InnerCreateHttpClient()
             =>
