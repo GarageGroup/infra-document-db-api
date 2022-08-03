@@ -60,6 +60,17 @@ jobs:
     - name: Pack Api.Abstractions.GetDocument
       run: dotnet pack ./src/*/Api.Abstractions.GetDocument.csproj --no-restore -o ~/nuget  -c Release
 
+    # Api.Abstractions.UpdateDocument
+
+    - name: Restore Api.Abstractions.UpdateDocument
+      run: dotnet restore ./src/*/Api.Abstractions.UpdateDocument.csproj
+
+    - name: Build Api.Abstractions.UpdateDocument
+      run: dotnet build ./src/*/Api.Abstractions.UpdateDocument.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions.UpdateDocument
+      run: dotnet pack ./src/*/Api.Abstractions.UpdateDocument.csproj --no-restore -o ~/nuget  -c Release
+      
     # Api.Abstractions
 
     - name: Restore Api.Abstractions
