@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +16,11 @@ partial class HttpExtensions
         if (input.DocumentOperations.Count > updateOperationsLimit)
         {
             return Failure.Create(DbDocumentUpdateFailureCode.ExceededOperationsLimit, $"The number of operations must be less than {updateOperationsLimit}");
+        }
+
+        if (input.DocumentOperations.Count is 0)
+        {
+            return Failure.Create(DbDocumentUpdateFailureCode.PassedNoOperations, $"The number of operations must be greater than 0");
         }
 
         var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/docs/{input.DocumentId}";
