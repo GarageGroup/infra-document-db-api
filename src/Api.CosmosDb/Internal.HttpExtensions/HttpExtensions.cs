@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -110,4 +111,55 @@ internal static partial class HttpExtensions
     private static string Encode(string source)
         =>
         HttpUtility.UrlEncode(source.ToLowerInvariant());
+
+    private static StringContent CreateUpdateContent(DbDocumentUpdateIn input)
+    {
+        var updateJson = new DbUpdateJsonIn(input.Condition, input.DocumentOperations.Select(MapOperation).ToArray());
+        
+        var content = new StringContent(JsonSerializer.Serialize(updateJson, jsonSerializerOptions));
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json_patch+json");
+
+        return content;
+
+        static DbUpdateJsonOperation MapOperation(DbDocumentOperation operation)
+            =>
+            new(
+                operationType: MapOperationType(operation.OperationType),
+                itemPath: operation.ItemPath,
+                value: operation.Value );
+
+        static string MapOperationType(DbDocumentOperationType operationType)
+            =>
+            operationType switch 
+            {
+                DbDocumentOperationType.Add       => "add",
+                DbDocumentOperationType.Set       => "set",
+                DbDocumentOperationType.Remove    => "remove",
+                DbDocumentOperationType.Replace   => "replace",
+                _ => throw new InvalidOperationException("Unknown operation type")
+            };
+    }
+
+    private static Result<T, Failure<TFailureCode>> DeserializeOrFailure<T, TFailureCode>(string body)
+        where TFailureCode : struct
+    {
+        try
+        {
+            var document = Deserialize<T>(body);
+            if(document is null)
+            {
+                return Failure.Create<TFailureCode>(default, $"Cannot deserialize response body: {body}");
+            }
+
+            return document;
+        }
+        catch (JsonException ex)
+        {
+            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+        }
+        catch (NotSupportedException ex)
+        {
+            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+        }
+    }
 }

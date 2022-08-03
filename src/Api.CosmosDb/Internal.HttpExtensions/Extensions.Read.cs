@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ internal static partial class HttpExtensions
             return CreateHttpFailure(httpResponse.StatusCode, body).MapFailureCode(MapStatusCode);
         }
 
-        return DeserializeOrFailure(body);
+        return DeserializeOrFailure<T, DbDocumentGetFailureCode>(body).MapSuccess(static doc => new DbDocumentGetOut<T>(doc));
 
         HttpClient InnerCreateHttpClient()
             =>
@@ -41,23 +40,5 @@ internal static partial class HttpExtensions
                 HttpStatusCode.NotFound => DbDocumentGetFailureCode.NotFound,
                 _ => default
             };
-        
-        static Result<DbDocumentGetOut<T>, Failure<DbDocumentGetFailureCode>> DeserializeOrFailure(string body)
-        {
-            try
-            {
-                var document = Deserialize<T>(body);
-                if(document is null)
-                {
-                    return Failure.Create(DbDocumentGetFailureCode.Unknown, $"Cannot deserialize response body: {body}");
-                }
-
-                return new DbDocumentGetOut<T>(document);
-            }
-            catch (JsonException ex)
-            {
-                return Failure.Create(DbDocumentGetFailureCode.Unknown, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
-            }
-        }
     }
 }
