@@ -136,7 +136,7 @@ internal static partial class HttpExtensions
                 DbDocumentOperationType.Set       => "set",
                 DbDocumentOperationType.Remove    => "remove",
                 DbDocumentOperationType.Replace   => "replace",
-                _ => throw new InvalidOperationException()
+                _ => throw new InvalidOperationException("Unknown operation type")
             };
     }
 
