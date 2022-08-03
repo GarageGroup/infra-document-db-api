@@ -1,6 +1,6 @@
 namespace GGroupp.Infra;
 
-public sealed record DbDocumentUpdateOut<T>
+public sealed record class DbDocumentUpdateOut<T>
 {
     public DbDocumentUpdateOut(T document)
         =>
