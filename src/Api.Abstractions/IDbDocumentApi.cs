@@ -1,5 +1,5 @@
 namespace GGroupp.Infra;
 
-public interface IDbDocumentApi : IDbDocumentCreateSupplier, IDbDocumentSetQuerySupplier, IDbDocumentGetSupplier
+public interface IDbDocumentApi : IDbDocumentCreateSupplier, IDbDocumentSetQuerySupplier, IDbDocumentGetSupplier, IDbDocumentUpdateSupplier
 {
 }
