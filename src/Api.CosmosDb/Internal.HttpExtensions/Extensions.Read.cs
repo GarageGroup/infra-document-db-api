@@ -11,7 +11,7 @@ internal static partial class HttpExtensions
     internal static async ValueTask<Result<DbDocumentGetOut<T>, Failure<DbDocumentGetFailureCode>>> SendAsync<T>(
         this HttpMessageHandler handler, CosmosDbApiOption option, DbDocumentGetIn input, CancellationToken cancellationToken)
     {
-        var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/docs/{input.DocumentId}";
+        var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/{ItemResourceType}/{input.DocumentId}";
         using var hashAlgorithm = CreateHashAlgorithm(option.MasterKey);
 
         using var httpClient = InnerCreateHttpClient();
@@ -30,7 +30,7 @@ internal static partial class HttpExtensions
         HttpClient InnerCreateHttpClient()
             =>
             CreateHttpClient(handler, option.BaseAddress)
-            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Get.Method, resourceId, "docs")
+            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Get.Method, resourceId, ItemResourceType)
             .AddPartitionKeyHeader(input.PartitionKey);
 
         static DbDocumentGetFailureCode MapStatusCode(HttpStatusCode statusCode)

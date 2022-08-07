@@ -105,8 +105,14 @@ internal static partial class HttpExtensions
     }
 
     private static string? GetHeaderValue(this HttpResponseMessage response, string headerName)
-        =>
-        response.Headers.TryGetValues(headerName, out var values) ? values?.ToString() : null;
+    {
+        if (response.Headers.TryGetValues(headerName, out var values) is false || values is null)
+        {
+            return null;
+        }
+
+        return string.Join(';', values);
+    }
 
     private static string Encode(string source)
         =>

@@ -15,21 +15,23 @@ partial class HttpExtensions
     {
         if (input.DocumentOperations.Count > updateOperationsLimit)
         {
-            return Failure.Create(DbDocumentUpdateFailureCode.ExceededOperationsLimit, $"The number of operations must be less than {updateOperationsLimit}");
+            return Failure.Create(
+                DbDocumentUpdateFailureCode.ExceededOperationsLimit, $"The number of operations must be less than {updateOperationsLimit}");
         }
 
         if (input.DocumentOperations.Count is 0)
         {
-            return Failure.Create(DbDocumentUpdateFailureCode.PassedNoOperations, $"The number of operations must be greater than 0");
+            return Failure.Create(
+                DbDocumentUpdateFailureCode.PassedNoOperations, "The number of operations must be greater than 0");
         }
 
-        var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/docs/{input.DocumentId}";
+        var resourceId = $"dbs/{Encode(option.DatabaseId)}/colls/{Encode(input.ContainerId)}/{ItemResourceType}/{input.DocumentId}";
         using var hashAlgorithm = CreateHashAlgorithm(option.MasterKey);
 
         using var httpClient = InnerCreateHttpClient();
         using var httpRequest = new HttpRequestMessage(HttpMethod.Patch, resourceId)
         {
-            Content = CreateUpdateContent(input)        
+            Content = CreateUpdateContent(input)
         };
 
         var httpResponse = await httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
@@ -45,7 +47,7 @@ partial class HttpExtensions
         HttpClient InnerCreateHttpClient()
             =>
             CreateHttpClient(handler, option.BaseAddress)
-            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Patch.Method, resourceId, "docs")
+            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Patch.Method, resourceId, ItemResourceType)
             .AddPartitionKeyHeader(input.PartitionKey);
 
         static DbDocumentUpdateFailureCode MapStatusCode(HttpStatusCode statusCode)

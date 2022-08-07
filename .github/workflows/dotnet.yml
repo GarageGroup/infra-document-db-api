@@ -70,6 +70,17 @@ jobs:
 
     - name: Pack Api.Abstractions.UpdateDocument
       run: dotnet pack ./src/*/Api.Abstractions.UpdateDocument.csproj --no-restore -o ~/nuget  -c Release
+
+    # Api.Abstractions.DeleteDocument
+
+    - name: Restore Api.Abstractions.DeleteDocument
+      run: dotnet restore ./src/*/Api.Abstractions.DeleteDocument.csproj
+
+    - name: Build Api.Abstractions.DeleteDocument
+      run: dotnet build ./src/*/Api.Abstractions.DeleteDocument.csproj --no-restore  -c Release
+
+    - name: Pack Api.Abstractions.DeleteDocument
+      run: dotnet pack ./src/*/Api.Abstractions.DeleteDocument.csproj --no-restore -o ~/nuget  -c Release
       
     # Api.Abstractions
 

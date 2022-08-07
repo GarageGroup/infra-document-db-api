@@ -24,7 +24,7 @@ internal static partial class HttpExtensions
             Parameters = input.QueryParameters?.Select(MapQueryParameter).ToArray()
         };
 
-        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, resourceId + "/docs")
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, resourceId + "/" + ItemResourceType)
         {
             Content = CreateQueryContent(query)
         };
@@ -44,7 +44,7 @@ internal static partial class HttpExtensions
         HttpClient InnerCreateHttpClient()
             =>
             CreateHttpClient(handler, option.BaseAddress)
-            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Post.Method, resourceId, "docs")
+            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Post.Method, resourceId, ItemResourceType)
             .AddHeader("x-ms-documentdb-isquery", bool.TrueString)
             .AddHeader("x-ms-max-item-count", input.MaxItemCount?.ToString())
             .AddHeader("x-ms-continuation", input.ContinuationToken)
