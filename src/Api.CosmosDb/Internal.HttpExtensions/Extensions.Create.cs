@@ -15,7 +15,7 @@ internal static partial class HttpExtensions
         using var hashAlgorithm = CreateHashAlgorithm(option.MasterKey);
 
         using var httpClient = InnerCreateHttpClient();
-        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, resourceId + "/docs")
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, resourceId + "/" + ItemResourceType)
         {
             Content = CreateDocumentContent(input.Document)
         };
@@ -32,7 +32,7 @@ internal static partial class HttpExtensions
         HttpClient InnerCreateHttpClient()
             =>
             CreateHttpClient(handler, option.BaseAddress)
-            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Post.Method, resourceId, "docs")
+            .AddCosmosDbCommonHeaders(hashAlgorithm, HttpMethod.Post.Method, resourceId, ItemResourceType)
             .AddPartitionKeyHeader(input.PartitionKey)
             .AddHeader("x-ms-documentdb-is-upsert", input.IsUpsert ? bool.TrueString : null);
 
