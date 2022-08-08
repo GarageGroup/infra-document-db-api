@@ -55,6 +55,7 @@ partial class HttpExtensions
             statusCode switch
             {
                 HttpStatusCode.NotFound => DbDocumentUpdateFailureCode.NotFound,
+                HttpStatusCode.PreconditionFailed => DbDocumentUpdateFailureCode.ConditionFailed,
                 HttpStatusCode.BadRequest => DbDocumentUpdateFailureCode.InvalidDocumentOperations,
                 _ => default
             };

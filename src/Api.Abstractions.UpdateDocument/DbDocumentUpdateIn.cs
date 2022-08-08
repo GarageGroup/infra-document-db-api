@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GGroupp.Infra;
 
@@ -10,12 +11,12 @@ public sealed record class DbDocumentUpdateIn
         string documentId, 
         string partitionKey,
         IReadOnlyCollection<DbDocumentOperation> documentOperations,
-        string? condition = null)
+        [AllowNull] string condition = null)
     {
         ContainerId = containerId ?? string.Empty;
         DocumentId = documentId ?? string.Empty;
         PartitionKey = partitionKey ?? string.Empty;
-        Condition = condition;
+        Condition = string.IsNullOrEmpty(condition) ? null : condition;
         DocumentOperations = documentOperations ?? Array.Empty<DbDocumentOperation>();
     }
 
