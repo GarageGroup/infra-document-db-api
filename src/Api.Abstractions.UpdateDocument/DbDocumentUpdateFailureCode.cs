@@ -10,5 +10,7 @@ public enum DbDocumentUpdateFailureCode
 
     ExceededOperationsLimit, 
     
-    PassedNoOperations
+    PassedNoOperations,
+
+    ConditionFailed
 }
