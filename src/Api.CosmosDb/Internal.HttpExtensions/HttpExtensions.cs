@@ -39,9 +39,15 @@ internal static partial class HttpExtensions
         return client.AddHeader("x-ms-date", utcDate).AddHeader("x-ms-version", "2018-12-31").AddHeader("authorization", authorizationHeaderValue);
     }
 
-    private static HttpClient AddPartitionKeyHeader(this HttpClient httpClient, string partitionKey)
-        =>
-        httpClient.AddHeader("x-ms-documentdb-partitionkey", "[\"" + partitionKey + "\"]");
+    private static HttpClient AddPartitionKeyHeader(this HttpClient httpClient, string? partitionKey)
+    {
+        if (string.IsNullOrEmpty(partitionKey) is false)
+        {
+            return httpClient.AddHeader("x-ms-documentdb-partitionkey", "[\"" + partitionKey + "\"]");
+        }
+
+        return httpClient;
+    }
 
     private static HttpClient AddHeader(this HttpClient httpClient, string name, string? value)
     {
