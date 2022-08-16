@@ -48,6 +48,7 @@ internal static partial class HttpExtensions
             .AddHeader("x-ms-documentdb-isquery", bool.TrueString)
             .AddHeader("x-ms-max-item-count", input.MaxItemCount?.ToString())
             .AddHeader("x-ms-continuation", input.ContinuationToken)
+            .AddPartitionKeyHeader(input.PartitionKey)
             .AddHeader("x-ms-documentdb-query-enablecrosspartition", bool.TrueString);
 
         static DbDocumentSetQueryFailureCode MapStatusCode(HttpStatusCode statusCode)
