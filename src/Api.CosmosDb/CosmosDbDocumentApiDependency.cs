@@ -23,7 +23,7 @@ public static class CosmosDbDocumentApiDependency
         return dependency.With(optionResolver).Fold<IDbDocumentApi>(CosmosDbDocumentApi.Create);
     }
 
-    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(this Dependency<HttpMessageHandler> dependency, string sectioName = "CosmosDb")
+    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(this Dependency<HttpMessageHandler> dependency, string sectionName = "CosmosDb")
     {
         _ = dependency ?? throw new ArgumentNullException(nameof(dependency));
 
@@ -31,7 +31,7 @@ public static class CosmosDbDocumentApiDependency
 
         CosmosDbApiOption ResolveOption(IServiceProvider serviceProvider)
             =>
-            serviceProvider.GetServiceOrThrow<IConfiguration>().GetSection(sectioName).GetCosmosDbApiOption();
+            serviceProvider.GetServiceOrThrow<IConfiguration>().GetSection(sectionName ?? string.Empty).GetCosmosDbApiOption();
     }
 
     private static CosmosDbApiOption GetCosmosDbApiOption(this IConfigurationSection section)

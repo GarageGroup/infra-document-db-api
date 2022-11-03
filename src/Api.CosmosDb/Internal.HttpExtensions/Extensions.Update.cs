@@ -13,13 +13,13 @@ partial class HttpExtensions
     internal static async ValueTask<Result<DbDocumentUpdateOut<T>, Failure<DbDocumentUpdateFailureCode>>> SendAsync<T>(
         this HttpMessageHandler handler, CosmosDbApiOption option, DbDocumentUpdateIn input, CancellationToken cancellationToken)
     {
-        if (input.DocumentOperations.Count > updateOperationsLimit)
+        if (input.DocumentOperations.Length > updateOperationsLimit)
         {
             return Failure.Create(
                 DbDocumentUpdateFailureCode.ExceededOperationsLimit, $"The number of operations must be less than {updateOperationsLimit}");
         }
 
-        if (input.DocumentOperations.Count is 0)
+        if (input.DocumentOperations.IsEmpty)
         {
             return Failure.Create(
                 DbDocumentUpdateFailureCode.PassedNoOperations, "The number of operations must be greater than 0");

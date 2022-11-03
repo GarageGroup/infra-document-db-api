@@ -10,14 +10,14 @@ public sealed record class DbDocumentUpdateIn
         string containerId,
         string documentId, 
         string partitionKey,
-        IReadOnlyCollection<DbDocumentOperation> documentOperations,
+        FlatArray<DbDocumentOperation> documentOperations,
         [AllowNull] string condition = null)
     {
         ContainerId = containerId ?? string.Empty;
         DocumentId = documentId ?? string.Empty;
         PartitionKey = partitionKey ?? string.Empty;
         Condition = string.IsNullOrEmpty(condition) ? null : condition;
-        DocumentOperations = documentOperations ?? Array.Empty<DbDocumentOperation>();
+        DocumentOperations = documentOperations ?? FlatArray.Empty<DbDocumentOperation>();
     }
 
     public string ContainerId { get; }
@@ -28,5 +28,5 @@ public sealed record class DbDocumentUpdateIn
 
     public string? Condition { get; }
 
-    public IReadOnlyCollection<DbDocumentOperation> DocumentOperations { get; }
+    public FlatArray<DbDocumentOperation> DocumentOperations { get; }
 }
