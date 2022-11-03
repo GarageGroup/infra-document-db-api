@@ -8,13 +8,13 @@ public sealed record class DbDocumentSetQueryIn
     public DbDocumentSetQueryIn(
         string containerId,
         string query,
-        [AllowNull] IReadOnlyCollection<KeyValuePair<string, string>> queryParameters,
+        [AllowNull] FlatArray<KeyValuePair<string, string>> queryParameters,
         int? maxItemCount = null,
         [AllowNull] string continuationToken = null)
     {
         ContainerId = containerId ?? string.Empty;
         Query = query ?? string.Empty;
-        QueryParameters = queryParameters?.Count is not > 0 ? null : queryParameters;
+        QueryParameters = queryParameters?.Length is not > 0 ? null : queryParameters;
         PartitionKey = null;
         MaxItemCount = maxItemCount;
         ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken;
@@ -23,14 +23,14 @@ public sealed record class DbDocumentSetQueryIn
     public DbDocumentSetQueryIn(
         string containerId,
         string query,
-        [AllowNull] IReadOnlyCollection<KeyValuePair<string, string>> queryParameters,
+        [AllowNull] FlatArray<KeyValuePair<string, string>> queryParameters,
         [AllowNull] string partitionKey,
         int? maxItemCount = null,
         [AllowNull] string continuationToken = null)
     {
         ContainerId = containerId ?? string.Empty;
         Query = query ?? string.Empty;
-        QueryParameters = queryParameters?.Count is not > 0 ? null : queryParameters;
+        QueryParameters = queryParameters?.Length is not > 0 ? null : queryParameters;
         PartitionKey = string.IsNullOrEmpty(partitionKey) ? null : partitionKey;
         MaxItemCount = maxItemCount;
         ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken;
@@ -40,7 +40,7 @@ public sealed record class DbDocumentSetQueryIn
 
     public string Query { get; }
 
-    public IReadOnlyCollection<KeyValuePair<string, string>>? QueryParameters { get; }
+    public FlatArray<KeyValuePair<string, string>>? QueryParameters { get; }
 
     public string? PartitionKey { get; }
 
