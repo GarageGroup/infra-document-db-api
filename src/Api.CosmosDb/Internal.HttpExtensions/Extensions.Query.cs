@@ -18,11 +18,7 @@ internal static partial class HttpExtensions
 
         using var httpClient = InnerCreateHttpClient();
 
-        var query = new DbQueryJsonIn
-        {
-            Query = input.Query,
-            Parameters = input.QueryParameters?.Select(MapQueryParameter).ToArray()
-        };
+        var query = new DbQueryJsonIn(input.Query, input.QueryParameters.Map(MapQueryParameter));
 
         using var httpRequest = new HttpRequestMessage(HttpMethod.Post, resourceId + "/" + ItemResourceType)
         {

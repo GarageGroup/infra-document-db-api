@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -34,19 +33,19 @@ internal static partial class HttpExtensions
         this HttpClient client, HashAlgorithm algorithm, string verb, string resourceId, string resourceType)
     {
         var utcDate = DateTime.UtcNow.ToString("r");
-        var authorizationHeaderValue = algorithm.GenerateAuthorizationHeaderValue(verb, resourceId, resourceType, utcDate);
+        var authHeaderValue = algorithm.GenerateAuthorizationHeaderValue(verb, resourceId, resourceType, utcDate);
 
-        return client.AddHeader("x-ms-date", utcDate).AddHeader("x-ms-version", "2018-12-31").AddHeader("authorization", authorizationHeaderValue);
+        return client.AddHeader("x-ms-date", utcDate).AddHeader("x-ms-version", "2018-12-31").AddHeader("authorization", authHeaderValue);
     }
 
     private static HttpClient AddPartitionKeyHeader(this HttpClient httpClient, string? partitionKey)
     {
-        if (string.IsNullOrEmpty(partitionKey) is false)
+        if (string.IsNullOrEmpty(partitionKey))
         {
-            return httpClient.AddHeader("x-ms-documentdb-partitionkey", "[\"" + partitionKey + "\"]");
+            return httpClient;
         }
 
-        return httpClient;
+        return httpClient.AddHeader("x-ms-documentdb-partitionkey", "[\"" + partitionKey + "\"]");
     }
 
     private static HttpClient AddHeader(this HttpClient httpClient, string name, string? value)
@@ -126,7 +125,11 @@ internal static partial class HttpExtensions
 
     private static StringContent CreateUpdateContent(DbDocumentUpdateIn input)
     {
-        var updateJson = new DbUpdateJsonIn(input.Condition, input.DocumentOperations.Select(MapOperation).ToArray());
+        var updateJson = new DbUpdateJsonIn
+        {
+            Condition = input.Condition,
+            Operations = input.DocumentOperations.Map(MapOperation)
+        };
         
         var content = new StringContent(JsonSerializer.Serialize(updateJson, jsonSerializerOptions));
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json_patch+json");
@@ -167,11 +170,32 @@ internal static partial class HttpExtensions
         }
         catch (JsonException ex)
         {
-            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+            return InnerCreateFailure(ex);
         }
         catch (NotSupportedException ex)
         {
-            return Failure.Create<TFailureCode>(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+            return InnerCreateFailure(ex);
         }
+
+        Failure<TFailureCode> InnerCreateFailure(Exception ex)
+            =>
+            new(default, $"An error occurred during deserialization response body: {body}, error: {ex.Message}");
+    }
+
+    private static FlatArray<TResult> Map<TSource, TResult>(this FlatArray<TSource> source, Func<TSource, TResult> map)
+    {
+        if (source.IsEmpty)
+        {
+            return default;
+        }
+
+        var array = new TResult[source.Length];
+
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = map.Invoke(source[i]);
+        }
+
+        return array;
     }
 }

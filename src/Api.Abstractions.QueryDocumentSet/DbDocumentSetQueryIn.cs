@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -8,13 +9,13 @@ public sealed record class DbDocumentSetQueryIn
     public DbDocumentSetQueryIn(
         string containerId,
         string query,
-        [AllowNull] FlatArray<KeyValuePair<string, string>> queryParameters,
+        FlatArray<KeyValuePair<string, string>> queryParameters,
         int? maxItemCount = null,
         [AllowNull] string continuationToken = null)
     {
         ContainerId = containerId ?? string.Empty;
         Query = query ?? string.Empty;
-        QueryParameters = queryParameters?.Length is not > 0 ? null : queryParameters;
+        QueryParameters = queryParameters;
         PartitionKey = null;
         MaxItemCount = maxItemCount;
         ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken;
@@ -23,14 +24,14 @@ public sealed record class DbDocumentSetQueryIn
     public DbDocumentSetQueryIn(
         string containerId,
         string query,
-        [AllowNull] FlatArray<KeyValuePair<string, string>> queryParameters,
+        FlatArray<KeyValuePair<string, string>> queryParameters,
         [AllowNull] string partitionKey,
         int? maxItemCount = null,
         [AllowNull] string continuationToken = null)
     {
         ContainerId = containerId ?? string.Empty;
         Query = query ?? string.Empty;
-        QueryParameters = queryParameters?.Length is not > 0 ? null : queryParameters;
+        QueryParameters = queryParameters;
         PartitionKey = string.IsNullOrEmpty(partitionKey) ? null : partitionKey;
         MaxItemCount = maxItemCount;
         ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken;
@@ -40,7 +41,7 @@ public sealed record class DbDocumentSetQueryIn
 
     public string Query { get; }
 
-    public FlatArray<KeyValuePair<string, string>>? QueryParameters { get; }
+    public FlatArray<KeyValuePair<string, string>> QueryParameters { get; }
 
     public string? PartitionKey { get; }
 

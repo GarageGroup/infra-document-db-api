@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>GGroupp.Infra</RootNamespace>
     <AssemblyName>GGroupp.Infra.DocumentDb.Api.Abstractions</AssemblyName>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.CreateDocument" Version="2.0.0" />
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.DeleteDocument" Version="2.0.0" />
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.QueryDocumentSet" Version="2.0.0" />
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.GetDocument" Version="2.0.0" />
-    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.UpdateDocument" Version="2.0.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.CreateDocument" Version="2.1.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.DeleteDocument" Version="2.1.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.QueryDocumentSet" Version="2.1.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.GetDocument" Version="2.1.0" />
+    <PackageReference Include="GGroupp.Infra.DocumentDb.Api.Abstractions.UpdateDocument" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

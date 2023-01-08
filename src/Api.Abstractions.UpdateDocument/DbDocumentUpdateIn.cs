@@ -17,7 +17,7 @@ public sealed record class DbDocumentUpdateIn
         DocumentId = documentId ?? string.Empty;
         PartitionKey = partitionKey ?? string.Empty;
         Condition = string.IsNullOrEmpty(condition) ? null : condition;
-        DocumentOperations = documentOperations ?? FlatArray.Empty<DbDocumentOperation>();
+        DocumentOperations = documentOperations;
     }
 
     public string ContainerId { get; }
@@ -26,7 +26,7 @@ public sealed record class DbDocumentUpdateIn
 
     public string PartitionKey { get; }
 
-    public string? Condition { get; }
-
     public FlatArray<DbDocumentOperation> DocumentOperations { get; }
+
+    public string? Condition { get; }
 }

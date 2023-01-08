@@ -7,8 +7,8 @@ internal sealed partial class CosmosDbDocumentApi : IDbDocumentApi
 {
     public static CosmosDbDocumentApi Create(HttpMessageHandler httpMessageHandler, CosmosDbApiOption option)
     {
-        _ = httpMessageHandler ?? throw new ArgumentNullException(nameof(httpMessageHandler));
-        _ = option ?? throw new ArgumentNullException(nameof(option));
+        ArgumentNullException.ThrowIfNull(httpMessageHandler);
+        ArgumentNullException.ThrowIfNull(option);
 
         return new(httpMessageHandler, option);
     }
