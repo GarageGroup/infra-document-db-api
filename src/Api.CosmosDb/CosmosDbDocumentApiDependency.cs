@@ -7,9 +7,10 @@ namespace GGroupp.Infra;
 
 public static class CosmosDbDocumentApiDependency
 {
-    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(this Dependency<HttpMessageHandler, CosmosDbApiOption> dependency)
+    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(
+        this Dependency<HttpMessageHandler, CosmosDbApiOption> dependency)
     {
-        _ = dependency ?? throw new ArgumentNullException(nameof(dependency));
+        ArgumentNullException.ThrowIfNull(dependency);
 
         return dependency.Fold<IDbDocumentApi>(CosmosDbDocumentApi.Create);
     }
@@ -17,15 +18,16 @@ public static class CosmosDbDocumentApiDependency
     public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(
         this Dependency<HttpMessageHandler> dependency, Func<IServiceProvider, CosmosDbApiOption> optionResolver)
     {
-        _ = dependency ?? throw new ArgumentNullException(nameof(dependency));
-        _ = optionResolver ?? throw new ArgumentNullException(nameof(optionResolver));
+        ArgumentNullException.ThrowIfNull(dependency);
+        ArgumentNullException.ThrowIfNull(optionResolver);
 
         return dependency.With(optionResolver).Fold<IDbDocumentApi>(CosmosDbDocumentApi.Create);
     }
 
-    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(this Dependency<HttpMessageHandler> dependency, string sectionName = "CosmosDb")
+    public static Dependency<IDbDocumentApi> UseCosmosDbDocumentApi(
+        this Dependency<HttpMessageHandler> dependency, string sectionName = "CosmosDb")
     {
-        _ = dependency ?? throw new ArgumentNullException(nameof(dependency));
+        ArgumentNullException.ThrowIfNull(dependency);
 
         return dependency.With(ResolveOption).Fold<IDbDocumentApi>(CosmosDbDocumentApi.Create);
 
@@ -37,7 +39,7 @@ public static class CosmosDbDocumentApiDependency
     private static CosmosDbApiOption GetCosmosDbApiOption(this IConfigurationSection section)
         =>
         new(
-            baseAddress: new(section["BaseAddressUrl"]),
-            masterKey: section["MasterKey"],
-            databaseId: section["DatabaseId"]);
+            baseAddress: new(section["BaseAddressUrl"] ?? string.Empty),
+            masterKey: section["MasterKey"] ?? string.Empty,
+            databaseId: section["DatabaseId"] ?? string.Empty);
 }
